@@ -2,9 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Navbar } from "@/components/Navbar";
 import { motion } from "framer-motion";
-import { Mail, Brain, Zap, Shield, ArrowRight, CheckCircle, Star, Users, Sparkles } from "lucide-react";
+import { Mail, Brain, Zap, Shield, ArrowRight, CheckCircle, Star, Users } from "lucide-react";
 import Link from "next/link";
 
 export default function LandingPage() {
@@ -15,41 +15,8 @@ export default function LandingPage() {
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-indigo-400/20 to-cyan-600/20 rounded-full blur-3xl" />
       
-      {/* Header */}
-      <header className="relative z-10 container mx-auto px-4 py-6 flex justify-between items-center backdrop-blur-sm">
-        <motion.div 
-          className="flex items-center space-x-3"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="relative">
-            <Mail className="h-8 w-8 text-primary" />
-            <Sparkles className="h-4 w-4 text-yellow-500 absolute -top-1 -right-1 animate-pulse" />
-          </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
-            MailMind
-          </h1>
-        </motion.div>
-        <motion.div 
-          className="flex items-center space-x-4"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <ThemeToggle />
-          <Link href="/login">
-            <Button variant="ghost" className="hover:bg-white/80 dark:hover:bg-slate-800/80">
-              Login
-            </Button>
-          </Link>
-          <Link href="/register">
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300">
-              Get Started
-            </Button>
-          </Link>
-        </motion.div>
-      </header>
+      {/* Navbar */}
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative z-10 container mx-auto px-4 py-16 lg:py-24 text-center">
@@ -246,7 +213,7 @@ export default function LandingPage() {
                 Ready to Transform Your Email Experience?
               </CardTitle>
               <CardDescription className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                Join thousands of professionals who have revolutionized their productivity with MailMind's intelligent email management
+                Join thousands of professionals who have revolutionized their productivity with MailMind&apos;s intelligent email management
               </CardDescription>
             </CardHeader>
             <CardContent className="pb-8">
