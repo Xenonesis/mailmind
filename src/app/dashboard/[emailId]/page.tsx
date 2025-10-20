@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useEmailStore } from "@/store/useEmailStore";
@@ -17,7 +16,6 @@ import {
   Trash2, 
   RefreshCw, 
   Paperclip, 
-  Calendar, 
   User, 
   Reply, 
   ReplyAll, 
@@ -25,14 +23,13 @@ import {
   Download,
   Clock,
   Sparkles,
-  Eye,
   Archive,
   AlertTriangle,
   Mail
 } from "lucide-react";
 import axiosClient from "@/lib/axiosClient";
 import { Email } from "@/types/email";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function EmailDetailPage() {
   const params = useParams();
@@ -69,9 +66,10 @@ export default function EmailDetailPage() {
     try {
       const response = await axiosClient.get(`/emails/${emailId}`);
       setEmail(response.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch email:", error);
-      const errorMessage = error.response?.data?.message || error.message || "Failed to load email. Please try again.";
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
+      const errorMessage = err.response?.data?.message || err.message || "Failed to load email. Please try again.";
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -91,9 +89,10 @@ export default function EmailDetailPage() {
     try {
       await axiosClient.delete(`/emails/${email.id}`);
       router.push("/dashboard");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to delete email:", error);
-      const errorMessage = error.response?.data?.message || "Failed to delete email";
+      const err = error as { response?: { data?: { message?: string } } };
+      const errorMessage = err.response?.data?.message || "Failed to delete email";
       alert(errorMessage);
     }
   };
@@ -111,9 +110,10 @@ export default function EmailDetailPage() {
       if (response.data?.summary) {
         setEmail({ ...email, aiSummary: response.data.summary });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to regenerate summary:", error);
-      const errorMessage = error.response?.data?.message || "Failed to regenerate AI summary";
+      const err = error as { response?: { data?: { message?: string } } };
+      const errorMessage = err.response?.data?.message || "Failed to regenerate AI summary";
       alert(errorMessage);
     } finally {
       setAiLoading(false);

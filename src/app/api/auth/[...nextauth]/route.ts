@@ -66,7 +66,7 @@ const handler = NextAuth({
           }
         } else {
           // Handle credentials login
-          token.accessToken = (user as any).accessToken;
+          token.accessToken = (user as { accessToken?: string }).accessToken;
         }
       }
       return token;

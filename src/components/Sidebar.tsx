@@ -11,15 +11,20 @@ import {
   Trash2, 
   Settings, 
   Mail,
-  AlertTriangle,
   Menu,
   X,
-  ChevronLeft,
-  ChevronRight
+  ChevronDown,
+  Plus,
+  FileText,
+  Shield,
+  Briefcase,
+  User,
+  Tag
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEmailStore } from "@/store/useEmailStore";
+import { EmailCategory } from "@/types/email";
 
 const categoryIcons = {
   inbox: Inbox,

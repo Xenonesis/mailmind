@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
             console.error("Google auth error:", error);
           }
         } else {
-          token.accessToken = (user as any).accessToken;
+          token.accessToken = (user as { accessToken?: string }).accessToken;
         }
       }
       return token;

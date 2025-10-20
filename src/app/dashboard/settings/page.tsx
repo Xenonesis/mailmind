@@ -66,7 +66,7 @@ export default function SettingsPage() {
     router.push("/login");
   };
 
-  const updateSettings = (key: keyof UserSettings, value: any) => {
+  const updateSettings = (key: keyof UserSettings, value: string | boolean | number) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 

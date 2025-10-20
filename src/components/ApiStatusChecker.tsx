@@ -58,14 +58,15 @@ export function ApiStatusChecker() {
         message: `Success (${response.data?.length || 0} items)`,
         responseTime,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       const responseTime = Date.now() - startTime;
+      const err = error as { response?: { status?: number; data?: { message?: string } }; message?: string };
       
       return {
         endpoint: endpoint.name,
         status: "error",
-        statusCode: error.response?.status,
-        message: error.response?.data?.message || error.message || "Connection failed",
+        statusCode: err.response?.status,
+        message: err.response?.data?.message || err.message || "Connection failed",
         responseTime,
       };
     }
@@ -189,7 +190,7 @@ export function ApiStatusChecker() {
                   {results.length === 0 ? (
                     <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                       <AlertCircle className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                      <p>Click "Test" to check API endpoints</p>
+                      <p>Click &quot;Test&quot; to check API endpoints</p>
                     </div>
                   ) : (
                     results.map((result, index) => (

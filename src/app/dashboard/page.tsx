@@ -5,17 +5,14 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Topbar } from "@/components/Topbar";
 import { Sidebar } from "@/components/Sidebar";
-import { EmailCard } from "@/components/EmailCard";
 import { ApiStatusChecker } from "@/components/ApiStatusChecker";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useEmailStore } from "@/store/useEmailStore";
-import { RefreshCw, Inbox, Mail, TrendingUp, Clock, Star, Filter, Search, AlertTriangle } from "lucide-react";
+import { RefreshCw, Inbox, Mail, TrendingUp, Clock, Star, Filter, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 import axiosClient from "@/lib/axiosClient";
-import { Email } from "@/types/email";
 
 // Lazy load heavy components
 const LazyEmailCard = lazy(() => import("@/components/EmailCard").then(module => ({ default: module.EmailCard })));
@@ -61,9 +58,10 @@ export default function DashboardPage() {
     try {
       const response = await axiosClient.get("/emails");
       setEmails(response.data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch emails:", error);
-      const errorMessage = error.response?.data?.message || error.message || "Failed to load emails. Please try again.";
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
+      const errorMessage = err.response?.data?.message || err.message || "Failed to load emails. Please try again.";
       setError(errorMessage);
       setEmails([]);
     } finally {

@@ -54,7 +54,7 @@ export default function LoginPage() {
         }
         router.push("/dashboard");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
@@ -77,7 +77,7 @@ export default function LoginPage() {
       } else if (result?.ok) {
         router.push("/dashboard");
       }
-    } catch (err) {
+    } catch {
       setError("Google sign-in failed. Please try again.");
       setIsLoading(false);
     }
@@ -200,7 +200,7 @@ export default function LoginPage() {
             </Button>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
+              <span className="text-muted-foreground">Don&apos;t have an account? </span>
               <Link href="/register" className="text-primary hover:underline">
                 Sign up
               </Link>

@@ -61,8 +61,8 @@ export default function RegisterPage() {
           router.push("/login");
         }, 2000);
       }
-    } catch (err: any) {
-      if (err.response?.status === 409) {
+    } catch (err: unknown) {
+      if ((err as { response?: { status?: number } }).response?.status === 409) {
         setError("An account with this email already exists");
       } else {
         setError("Failed to create account. Please try again.");

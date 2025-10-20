@@ -4,7 +4,7 @@ import { Email } from "@/types/email";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Star, Paperclip, Clock, Mail, Sparkles } from "lucide-react";
+import { Star, Paperclip, Clock, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useEmailStore } from "@/store/useEmailStore";
