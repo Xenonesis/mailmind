@@ -12,7 +12,6 @@ import {
   User, 
   LogOut, 
   Mail,
-  Menu,
   X,
   Filter
 } from "lucide-react";
@@ -64,7 +63,7 @@ export function Topbar() {
 
   return (
     <header 
-      className="h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200/50 dark:border-slate-700/50 px-4 md:px-6 flex items-center justify-between shadow-sm"
+      className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200/50 dark:border-slate-700/50 px-4 md:px-6 flex items-center justify-between shadow-sm"
       role="banner"
     >
       {/* Left Section */}

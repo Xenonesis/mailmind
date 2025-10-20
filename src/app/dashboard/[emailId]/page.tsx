@@ -200,7 +200,7 @@ export default function EmailDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background pt-16">
         <motion.div 
           className="max-w-5xl mx-auto p-6 space-y-6"
           initial={{ opacity: 0, y: 20 }}
@@ -248,7 +248,7 @@ export default function EmailDetailPage() {
 
   if (!email) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center pt-16">
         <motion.div 
           className="text-center"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -275,14 +275,14 @@ export default function EmailDetailPage() {
 
   return (
     <motion.div 
-      className="min-h-screen bg-background"
+      className="min-h-screen bg-background pt-16"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
       {/* Enhanced Header */}
       <motion.div 
-        className="border-b bg-card/95 backdrop-blur-sm sticky top-0 z-40"
+        className="border-b bg-card/95 backdrop-blur-sm sticky top-16 z-40"
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.1 }}

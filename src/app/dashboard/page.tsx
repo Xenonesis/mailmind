@@ -235,7 +235,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50/50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
       <Topbar />
-      <div className="flex flex-col lg:flex-row">
+      <div className="flex flex-col lg:flex-row pt-16">
         {/* Mobile Sidebar Toggle */}
         <div className="lg:hidden">
           <Sidebar />
