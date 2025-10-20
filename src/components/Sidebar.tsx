@@ -83,7 +83,7 @@ export function Sidebar({ className }: SidebarProps) {
   const SidebarContent = () => (
     <motion.div 
       className={cn(
-        "w-72 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-r border-slate-200 dark:border-slate-700 flex flex-col h-full",
+        "w-72 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-r border-slate-200 dark:border-slate-700 flex flex-col h-screen",
         className
       )}
       initial={{ x: -20, opacity: 0 }}
@@ -345,7 +345,7 @@ export function Sidebar({ className }: SidebarProps) {
   return (
     <>
       {/* Mobile Menu Button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
+      <div className="lg:hidden fixed top-20 left-4 z-40">
         <Button
           variant="outline"
           size="sm"
@@ -358,7 +358,7 @@ export function Sidebar({ className }: SidebarProps) {
 
       {/* Desktop Sidebar */}
       <div className={cn(
-        "hidden lg:block transition-all duration-300",
+        "hidden lg:block fixed left-0 top-16 h-[calc(100vh-4rem)] transition-all duration-300",
         isCollapsed ? "w-16" : "w-72"
       )}>
         <SidebarContent />
@@ -383,7 +383,7 @@ export function Sidebar({ className }: SidebarProps) {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed left-0 top-0 h-full w-72 z-50"
+              className="lg:hidden fixed left-0 top-16 h-[calc(100vh-4rem)] w-72 z-50"
             >
               <SidebarContent />
             </motion.div>

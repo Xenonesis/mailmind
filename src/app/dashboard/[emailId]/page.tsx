@@ -200,7 +200,7 @@ export default function EmailDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background pt-16">
+      <div className="min-h-screen bg-background pt-16 lg:pl-72">
         <motion.div 
           className="max-w-5xl mx-auto p-6 space-y-6"
           initial={{ opacity: 0, y: 20 }}
@@ -248,7 +248,7 @@ export default function EmailDetailPage() {
 
   if (!email) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center pt-16">
+      <div className="min-h-screen bg-background flex items-center justify-center pt-16 lg:pl-72">
         <motion.div 
           className="text-center"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -275,7 +275,7 @@ export default function EmailDetailPage() {
 
   return (
     <motion.div 
-      className="min-h-screen bg-background pt-16"
+      className="min-h-screen bg-background pt-16 lg:pl-72"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
