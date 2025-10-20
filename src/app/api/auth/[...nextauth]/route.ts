@@ -40,6 +40,15 @@ const handler = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      // Request offline access and Gmail readonly scope so the app can read messages.
+      // `prompt: 'consent'` ensures a refresh token is returned the first time.
+      authorization: {
+        params: {
+          scope: 'openid email profile https://www.googleapis.com/auth/gmail.readonly',
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
     })
   ],
   callbacks: {

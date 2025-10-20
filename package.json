@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "predev": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"try { $conns = Get-NetTCPConnection -LocalPort 3001 -State Listen; if ($conns) { $pids = $conns | Select-Object -Expand OwningProcess | Get-Unique; foreach ($pid in $pids) { Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue } } } catch {} ; exit 0\"",
+    "dev": "next dev -p 3001 --turbopack",
     "build": "next build --turbopack",
-    "start": "next start",
+    "start": "next start -p 3001",
     "lint": "eslint"
   },
   "dependencies": {

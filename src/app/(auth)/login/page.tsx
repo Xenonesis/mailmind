@@ -64,8 +64,19 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      // Redirect to NestJS backend Google OAuth endpoint
-      window.location.href = "http://localhost:3000/api/auth/google";
+      // Use NextAuth for Google OAuth (frontend-driven flow)
+      // After successful Google auth, the JWT callback will sync with backend at /auth/google/callback
+      const result = await signIn("google", {
+        callbackUrl: "/dashboard",
+        redirect: false,
+      });
+      
+      if (result?.error) {
+        setError("Google sign-in failed. Please try again.");
+        setIsLoading(false);
+      } else if (result?.ok) {
+        router.push("/dashboard");
+      }
     } catch (err) {
       setError("Google sign-in failed. Please try again.");
       setIsLoading(false);
