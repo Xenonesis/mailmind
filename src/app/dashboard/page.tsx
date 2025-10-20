@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 import { Topbar } from "@/components/Topbar";
 import { Sidebar } from "@/components/Sidebar";
 import { EmailCard } from "@/components/EmailCard";
+import { ApiStatusChecker } from "@/components/ApiStatusChecker";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useEmailStore } from "@/store/useEmailStore";
-import { RefreshCw, Inbox, Mail, TrendingUp, Clock, Star, Filter, Search } from "lucide-react";
+import { RefreshCw, Inbox, Mail, TrendingUp, Clock, Star, Filter, Search, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 import axiosClient from "@/lib/axiosClient";
 import { Email } from "@/types/email";
@@ -50,66 +51,25 @@ export default function DashboardPage() {
     }
   }, [session]);
 
+  const [error, setError] = useState<string | null>(null);
+
   const fetchEmails = useCallback(async () => {
     if (isLoading) return;
     
     setIsLoading(true);
+    setError(null);
     try {
       const response = await axiosClient.get("/emails");
       setEmails(response.data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch emails:", error);
-      // Set mock data for demo purposes
-      setMockEmails();
+      const errorMessage = error.response?.data?.message || error.message || "Failed to load emails. Please try again.";
+      setError(errorMessage);
+      setEmails([]);
     } finally {
       setIsLoading(false);
     }
   }, [isLoading, setEmails, setIsLoading]);
-
-  const setMockEmails = () => {
-    const mockEmails: Email[] = [
-      {
-        id: "1",
-        subject: "Welcome to MailMind!",
-        sender: { name: "MailMind Team", email: "hello@mailmind.com" },
-        recipients: [{ email: session?.user?.email || "" }],
-        body: "Welcome to MailMind! We're excited to help you manage your emails more efficiently with AI-powered features.",
-        date: new Date().toISOString(),
-        category: "inbox",
-        priority: "high",
-        isRead: false,
-        isStarred: true,
-        aiSummary: "Welcome message from MailMind team introducing AI-powered email management features.",
-      },
-      {
-        id: "2",
-        subject: "Project Update - Q4 Goals",
-        sender: { name: "Sarah Johnson", email: "sarah@company.com" },
-        recipients: [{ email: session?.user?.email || "" }],
-        body: "Hi team, I wanted to share an update on our Q4 goals and the progress we've made so far...",
-        date: new Date(Date.now() - 86400000).toISOString(),
-        category: "work",
-        priority: "medium",
-        isRead: true,
-        isStarred: false,
-        aiSummary: "Project update discussing Q4 goals and current progress from Sarah Johnson.",
-      },
-      {
-        id: "3",
-        subject: "Special Offer: 50% Off Premium Plan",
-        sender: { name: "CloudService", email: "offers@cloudservice.com" },
-        recipients: [{ email: session?.user?.email || "" }],
-        body: "Don't miss out on our limited-time offer! Get 50% off our premium plan for the first 6 months...",
-        date: new Date(Date.now() - 172800000).toISOString(),
-        category: "promotions",
-        priority: "low",
-        isRead: false,
-        isStarred: false,
-        aiSummary: "Promotional email offering 50% discount on premium cloud service plan.",
-      },
-    ];
-    setEmails(mockEmails);
-  };
 
   const handleSync = useCallback(async () => {
     if (syncLoading) return;
@@ -236,6 +196,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50/50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
       <Topbar />
       <Sidebar />
+      <ApiStatusChecker />
       <div className="pt-16 lg:pl-72">
         <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
           {/* Header Section */}
@@ -411,6 +372,45 @@ export default function DashboardPage() {
                   </motion.div>
                 ))}
               </div>
+            ) : error ? (
+              <motion.div 
+                className="text-center py-16 px-4"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.div
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+                </motion.div>
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                  Failed to Load Emails
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
+                  {error}
+                </p>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button 
+                    onClick={fetchEmails} 
+                    disabled={isLoading}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    {isLoading ? "Retrying..." : "Retry"}
+                  </Button>
+                </motion.div>
+              </motion.div>
             ) : filteredEmails.length === 0 ? (
               <motion.div 
                 className="text-center py-16 px-4"
@@ -418,19 +418,17 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
               >
-                <motion.div 
-                  className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 rounded-full flex items-center justify-center"
-                  animate={{ 
-                    rotate: [0, 5, -5, 0],
-                    scale: [1, 1.05, 1]
+                <motion.div
+                  animate={{
+                    y: [0, -10, 0],
                   }}
-                  transition={{ 
-                    duration: 4, 
+                  transition={{
+                    duration: 2,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
                 >
-                  <Mail className="h-12 w-12 text-slate-400 dark:text-slate-500" />
+                  <Mail className="h-12 w-12 text-slate-400 dark:text-slate-500 mx-auto mb-4" />
                 </motion.div>
                 <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
                   No emails found

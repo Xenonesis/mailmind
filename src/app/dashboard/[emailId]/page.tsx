@@ -26,7 +26,9 @@ import {
   Clock,
   Sparkles,
   Eye,
-  Archive
+  Archive,
+  AlertTriangle,
+  Mail
 } from "lucide-react";
 import axiosClient from "@/lib/axiosClient";
 import { Email } from "@/types/email";
@@ -59,73 +61,21 @@ export default function EmailDetailPage() {
     }
   }, [emailId, emails, session]);
 
+  const [error, setError] = useState<string | null>(null);
+
   const fetchEmail = async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const response = await axiosClient.get(`/emails/${emailId}`);
       setEmail(response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch email:", error);
-      // Set mock email for demo
-      setMockEmail();
+      const errorMessage = error.response?.data?.message || error.message || "Failed to load email. Please try again.";
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const setMockEmail = () => {
-    const mockEmail: Email = {
-      id: emailId,
-      subject: "Welcome to MailMind - Your AI Email Assistant",
-      sender: { name: "MailMind Team", email: "hello@mailmind.com" },
-      recipients: [{ email: session?.user?.email || "user@example.com" }],
-      body: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-          <h2 style="color: #2563eb;">Welcome to MailMind!</h2>
-          
-          <p>Dear ${session?.user?.name || "User"},</p>
-          
-          <p>We're thrilled to welcome you to MailMind, the revolutionary AI-powered email management platform that will transform how you handle your inbox.</p>
-          
-          <h3 style="color: #2563eb;">What makes MailMind special?</h3>
-          <ul>
-            <li><strong>AI-Powered Summaries:</strong> Get instant, intelligent summaries of your emails</li>
-            <li><strong>Smart Categorization:</strong> Automatically organize emails into Work, Personal, Promotions, and more</li>
-            <li><strong>Priority Detection:</strong> Never miss important emails with our AI priority system</li>
-            <li><strong>Beautiful Interface:</strong> Enjoy a clean, modern design that makes email management a pleasure</li>
-          </ul>
-          
-          <h3 style="color: #2563eb;">Getting Started</h3>
-          <p>Your account is now active and ready to use. Here are your next steps:</p>
-          <ol>
-            <li>Connect your email accounts for seamless synchronization</li>
-            <li>Explore the dashboard and familiarize yourself with the categories</li>
-            <li>Try the AI summary feature on your existing emails</li>
-            <li>Customize your settings to match your preferences</li>
-          </ol>
-          
-          <p>If you have any questions or need assistance, our support team is here to help. Simply reply to this email or visit our help center.</p>
-          
-          <p>Thank you for choosing MailMind. We're excited to help you achieve inbox zero!</p>
-          
-          <p>Best regards,<br>
-          The MailMind Team</p>
-          
-          <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
-          <p style="font-size: 12px; color: #666;">
-            This email was sent to ${session?.user?.email || "user@example.com"}. 
-            If you no longer wish to receive these emails, you can unsubscribe at any time.
-          </p>
-        </div>
-      `,
-      date: new Date().toISOString(),
-      category: "inbox",
-      priority: "high",
-      isRead: true,
-      isStarred: false,
-      aiSummary: "Welcome email from MailMind team introducing AI-powered email management features, including smart categorization, priority detection, and getting started instructions.",
-    };
-    setEmail(mockEmail);
   };
 
   const handleStarToggle = () => {
@@ -141,10 +91,10 @@ export default function EmailDetailPage() {
     try {
       await axiosClient.delete(`/emails/${email.id}`);
       router.push("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to delete email:", error);
-      // For demo, just navigate back
-      router.push("/dashboard");
+      const errorMessage = error.response?.data?.message || "Failed to delete email";
+      alert(errorMessage);
     }
   };
 
@@ -161,11 +111,10 @@ export default function EmailDetailPage() {
       if (response.data?.summary) {
         setEmail({ ...email, aiSummary: response.data.summary });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to regenerate summary:", error);
-      // Mock AI summary for demo
-      const mockSummary = "This is a regenerated AI summary: " + email.aiSummary;
-      setEmail({ ...email, aiSummary: mockSummary });
+      const errorMessage = error.response?.data?.message || "Failed to regenerate AI summary";
+      alert(errorMessage);
     } finally {
       setAiLoading(false);
     }
@@ -246,6 +195,33 @@ export default function EmailDetailPage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center pt-16 lg:pl-72">
+        <motion.div 
+          className="text-center max-w-md px-4"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-semibold mb-2">Failed to Load Email</h2>
+          <p className="text-muted-foreground mb-6">{error}</p>
+          <div className="flex gap-3 justify-center">
+            <Button onClick={fetchEmail} variant="default">
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Retry
+            </Button>
+            <Button onClick={() => router.push("/dashboard")} variant="outline">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Dashboard
+            </Button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   if (!email) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center pt-16 lg:pl-72">
@@ -255,16 +231,10 @@ export default function EmailDetailPage() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="mb-6">
-            <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
-              <Eye className="h-12 w-12 text-muted-foreground" />
-            </div>
-            <h2 className="text-2xl font-bold mb-2">Email not found</h2>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              The email you're looking for doesn't exist or may have been deleted.
-            </p>
-          </div>
-          <Button onClick={() => router.push("/dashboard")} size="lg">
+          <Mail className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-2xl font-semibold mb-2">Email not found</h2>
+          <p className="text-muted-foreground mb-6">The email you&apos;re looking for doesn&apos;t exist or has been deleted.</p>
+          <Button onClick={() => router.push("/dashboard")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Dashboard
           </Button>
